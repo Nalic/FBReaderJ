@@ -106,7 +106,6 @@
 		</node>
 	</node>
 	<node name="menu">
-		<node name="preferences-old" value="Paramètres avancés"/>
 		<node name="preferences" value="Paramètres"/>
 		<node name="bookInfo" value="Information sur le livre"/>
 		<node name="library" value="Bibliothèque"/>
@@ -170,7 +169,9 @@
 			</node>
 			<node name="text" value="Text" toBeTranslated="true">
 				<node name="summary" value="Font, hyphenations, etc." toBeTranslated="true"/>
-				<node name="font" value="Font family" toBeTranslated="true"/>
+				<node name="font" value="Font family" toBeTranslated="true">
+					<node name="unchanged" value="&lt;inchangé&gt;"/>
+				</node>
 				<node name="fontSize" value="Font size" toBeTranslated="true"/>
 				<node name="fontStyle" value="Font style" toBeTranslated="true">
 					<node name="regular" value="Regular" toBeTranslated="true"/>
@@ -184,6 +185,7 @@
 					<node name="right" value="Droite"/>
 					<node name="center" value="Centré"/>
 					<node name="justify" value="Justifié"/>
+					<node name="unchanged" value="&lt;inchangé&gt;"/>
 				</node>
 				<node name="autoHyphenations" value="Césures automatiques">
 					<node name="summaryOn" value="Hyphenate words automatically" toBeTranslated="true"/>
@@ -301,13 +303,6 @@
 						<node name="unchanged" value="&lt;inchangé&gt;"/>
 					</node>
 					<node name="firstLineIndent" value="Indentation de la première ligne"/>
-					<node name="alignment" value="Alignement">
-						<node name="left" value="Gauche"/>
-						<node name="right" value="Droite"/>
-						<node name="center" value="Centré"/>
-						<node name="justify" value="Justifié"/>
-						<node name="unchanged" value="&lt;inchangé&gt;"/>
-					</node>
 					<node name="spaceBefore" value="Espace avant"/>
 					<node name="spaceAfter" value="Espace après"/>
 					<node name="leftIndent" value="Indentation à gauche"/>
@@ -315,9 +310,6 @@
 				</node>
 				<node name="Styles" value="Styles">
 					<node name="optionsFor" value="Options pour"/>
-					<node name="fontFamily" value="Famille de police">
-						<node name="unchanged" value="&lt;inchangé&gt;"/>
-					</node>
 					<node name="fontSize" value="Taille de police"/>
 					<node name="fontSizeDifference" value="Différence de taille"/>
 					<node name="bold" value="Gras"/>

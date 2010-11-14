@@ -103,7 +103,6 @@
 		</node>
 	</node>
 	<node name="menu">
-		<node name="preferences-old" value="参数设置（更多）" />
 		<node name="preferences" value="参数设置" />
 		<node name="bookInfo" value="书籍信息" />
 		<node name="library" value="本地藏书" />
@@ -167,7 +166,9 @@
 			</node>
 			<node name="text" value="Text" toBeTranslated="true">
 				<node name="summary" value="Font, hyphenations, etc." toBeTranslated="true"/>
-				<node name="font" value="Font family" toBeTranslated="true"/>
+				<node name="font" value="Font family" toBeTranslated="true">
+					<node name="unchanged" value="&lt;不变&gt;" />
+				</node>
 				<node name="fontSize" value="Font size" toBeTranslated="true"/>
 				<node name="fontStyle" value="Font style" toBeTranslated="true">
 					<node name="regular" value="Regular" toBeTranslated="true"/>
@@ -181,6 +182,7 @@
 					<node name="right" value="右" />
 					<node name="center" value="居中" />
 					<node name="justify" value="对齐" />
+					<node name="unchanged" value="&lt;不变&gt;" />
 				</node>
 				<node name="autoHyphenations" value="自动断字">
 					<node name="summaryOn" value="Hyphenate words automatically" toBeTranslated="true"/>
@@ -296,13 +298,6 @@
 						<node name="unchanged" value="&lt;不变&gt;" />
 					</node>
 					<node name="firstLineIndent" value="首行缩进" />
-					<node name="alignment" value="对齐">
-						<node name="left" value="左" />
-						<node name="right" value="右" />
-						<node name="center" value="居中" />
-						<node name="justify" value="对齐" />
-						<node name="unchanged" value="&lt;不变&gt;" />
-					</node>
 					<node name="spaceBefore" value="段前距" />
 					<node name="spaceAfter" value="段后距" />
 					<node name="leftIndent" value="左缩进" />
@@ -310,9 +305,6 @@
 				</node>
 				<node name="Styles" value="样式">
 					<node name="optionsFor" value="选项" />
-					<node name="fontFamily" value="字体">
-						<node name="unchanged" value="&lt;不变&gt;" />
-					</node>
 					<node name="fontSize" value="大小" />
 					<node name="fontSizeDifference" value="大小差异" />
 					<node name="bold" value="加粗" />
