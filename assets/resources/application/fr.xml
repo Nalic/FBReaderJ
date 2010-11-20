@@ -169,7 +169,9 @@
 			</node>
 			<node name="text" value="Texte">
 				<node name="summary" value="Polices, césures, etc."/>
-				<node name="font" value="Famille de police"/>
+				<node name="font" value="Famille de police">
+					<node name="unchanged" value="&lt;inchangé&gt;"/>
+				</node>
 				<node name="fontSize" value="Taille de police"/>
 				<node name="fontStyle" value="Style de police">
 					<node name="regular" value="Normale"/>
