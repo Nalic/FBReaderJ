@@ -39,6 +39,8 @@ import org.geometerplus.zlibrary.core.filesystem.ZLFile;
 import org.geometerplus.fbreader.library.*;
 import org.geometerplus.fbreader.tree.FBTree;
 
+import org.geometerplus.android.util.AndroidUtil;
+
 public class LibraryTabActivity extends TabActivity implements MenuItem.OnMenuItemClickListener {
 	public static final String CURRENT_BOOK_PATH_KEY = "CurrentBookPath";
 
@@ -66,7 +68,7 @@ public class LibraryTabActivity extends TabActivity implements MenuItem.OnMenuIt
 	private void createDefaultTabs() {
 		new LibraryAdapter(createTab("byAuthor", R.id.by_author, R.drawable.ic_tab_library_author), myLibrary.byAuthor(), Type.TREE);
 		new LibraryAdapter(createTab("byTag", R.id.by_tag, R.drawable.ic_tab_library_tag), myLibrary.byTag(), Type.TREE);
-		new LibraryAdapter(createTab("recent", R.id.recent, R.drawable.ic_tab_library_recent), myLibrary.recentBooks(), Type.FLAT);
+		new LibraryAdapter(createTab("recent", R.id.recent, R.drawable.ic_tab_library_recent), myLibrary.recentBooks(), Type.TREE);
 		findViewById(R.id.search_results).setVisibility(View.GONE);
 	}
 
@@ -89,8 +91,16 @@ public class LibraryTabActivity extends TabActivity implements MenuItem.OnMenuIt
 		if (myLibrary == null) {
 			myLibrary = new Library();
 		}
-		myLibrary.clear();
-		myLibrary.synchronize();
+		final Runnable action = new Runnable() {
+			public void run() {
+				myLibrary.clear();
+				myLibrary.synchronize();
+			}
+		};
+		System.err.println("before");
+        action.run();
+		//AndroidUtil.wait("loadingBookList", action, this);
+		System.err.println("after");
 
 		final Intent intent = getIntent();
 		myCurrentBookPath = intent.getStringExtra(CURRENT_BOOK_PATH_KEY);
@@ -168,7 +178,6 @@ public class LibraryTabActivity extends TabActivity implements MenuItem.OnMenuIt
 	interface Type {
 		int TREE = 0;
 		int FLAT = 1;
-		int NETWORK = 2;
 	}
 
 	private final class LibraryAdapter extends ZLTreeAdapter {
@@ -225,20 +234,7 @@ public class LibraryTabActivity extends TabActivity implements MenuItem.OnMenuIt
 					iconView.setVisibility(View.GONE);
 					break;
 				case Type.TREE:
-					setIcon(iconView, tree);
-					break;
-				case Type.NETWORK:
-					switch (position % 3) {
-						case 0:
-							iconView.setImageResource(R.drawable.ic_list_buy);
-							break;
-						case 1:
-							iconView.setImageResource(R.drawable.ic_list_download);
-							break;
-						case 2:
-							iconView.setImageResource(R.drawable.ic_list_flag);
-							break;
-					}
+					setIcon(view, iconView, tree);
 					break;
 			}
 			((TextView)view.findViewById(R.id.library_tree_item_name)).setText(tree.getName());

@@ -39,15 +39,10 @@ class ShowLibraryAction extends FBAction {
 
 	public void run() {
 		final BookModel model = Reader.Model;
-		Runnable action = new Runnable() {
-			public void run() {
-				Intent intent = new Intent(myBaseActivity.getApplicationContext(), LibraryTabActivity.class);
-				if (model != null && model.Book != null) {
-					intent.putExtra(LibraryTabActivity.CURRENT_BOOK_PATH_KEY, model.Book.File.getPath());
-				}
-				myBaseActivity.startActivity(intent);
-			}
-		};
-		UIUtil.wait("loadingBookList", action, myBaseActivity);
+		Intent intent = new Intent(myBaseActivity.getApplicationContext(), LibraryTabActivity.class);
+		if (model != null && model.Book != null) {
+			intent.putExtra(LibraryTabActivity.CURRENT_BOOK_PATH_KEY, model.Book.File.getPath());
+		}
+		myBaseActivity.startActivity(intent);
 	}
 }
