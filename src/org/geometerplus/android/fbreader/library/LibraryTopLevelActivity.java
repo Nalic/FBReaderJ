@@ -24,11 +24,13 @@ import java.util.ArrayList;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.ListView;
 
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 
 import org.geometerplus.fbreader.tree.FBTree;
+import org.geometerplus.fbreader.library.Library;
 
 import org.geometerplus.zlibrary.ui.android.R;
 
@@ -36,12 +38,18 @@ import org.geometerplus.android.fbreader.SQLiteBooksDatabase;
 import org.geometerplus.android.fbreader.tree.ZLAndroidTree;
 
 public class LibraryTopLevelActivity extends LibraryBaseActivity {
+	static Library Library;
+
 	@Override
 	public void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		if (SQLiteBooksDatabase.Instance() == null) {
 			new SQLiteBooksDatabase("LIBRARY_NG");
+		}
+		if (Library == null) {
+			Library = new Library();
 		}
 
 		final ArrayList<FBTree> items = new ArrayList<FBTree>();
@@ -54,32 +62,24 @@ public class LibraryTopLevelActivity extends LibraryBaseActivity {
 			}
 		));
 		items.add(new TopLevelTree(
+			myResource.getResource("favorites"),
+			R.drawable.ic_tab_library_recent,
+			new OpenTreeRunnable(LibraryTreeActivity.PATH_FAVORITES, mySelectedBookPath)
+		));
+		items.add(new TopLevelTree(
 			myResource.getResource("recent"),
 			R.drawable.ic_tab_library_recent,
-			new Runnable() {
-				public void run() {
-					startActivity(new Intent(
-						LibraryTopLevelActivity.this,
-						LibraryRecentActivity.class
-					));
-				}
-			}
+			new OpenTreeRunnable(LibraryTreeActivity.PATH_RECENT, mySelectedBookPath)
 		));
 		items.add(new TopLevelTree(
 			myResource.getResource("byAuthor"),
-			R.drawable.ic_tab_library_author,
-			new Runnable() {
-				public void run() {
-				}
-			}
+			R.drawable.library_by_author,
+			new OpenTreeRunnable(LibraryTreeActivity.PATH_BY_AUTHOR, mySelectedBookPath)
 		));
 		items.add(new TopLevelTree(
 			myResource.getResource("byTag"),
-			R.drawable.ic_tab_library_tag,
-			new Runnable() {
-				public void run() {
-				}
-			}
+			R.drawable.library_by_tag,
+			new OpenTreeRunnable(LibraryTreeActivity.PATH_BY_TAG, mySelectedBookPath)
 		));
 		items.add(new TopLevelTree(
 			myResource.getResource("fileTree"),
@@ -90,6 +90,12 @@ public class LibraryTopLevelActivity extends LibraryBaseActivity {
 			}
 		));
 		setListAdapter(new LibraryAdapter(items));
+	}
+
+	@Override
+	public void onDestroy() {
+		Library = null;
+		super.onDestroy();
 	}
 
 	@Override
