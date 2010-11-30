@@ -40,7 +40,6 @@ import org.geometerplus.fbreader.network.NetworkTree;
 import org.geometerplus.fbreader.network.NetworkLibrary;
 
 public class NetworkLibraryActivity extends NetworkBaseActivity {
-
 	private NetworkTree myTree;
 
 	@Override
