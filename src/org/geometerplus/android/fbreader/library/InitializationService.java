@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2010 Geometer Plus <contact@geometerplus.com>
+ * Copyright (C) 2010 Geometer Plus <contact@geometerplus.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,18 +17,26 @@
  * 02110-1301, USA.
  */
 
-package org.geometerplus.zlibrary.core.image;
+package org.geometerplus.android.fbreader.library;
 
-public abstract class ZLSingleImage implements ZLImage {
-	private final String myMimeType;
-	
-	public ZLSingleImage(final String mimeType) {
-		myMimeType = mimeType;
+import android.app.Service;
+import android.content.Intent;
+import android.os.IBinder;
+
+public class InitializationService extends Service {
+	@Override
+	public IBinder onBind(Intent intent) {
+		return null;
 	}
 
-	public abstract byte[] byteData();
-	
-	public final String mimeType() {
-		return myMimeType;
+	@Override
+	public void onStart(Intent intent, int startId) {
+		LibraryTopLevelActivity.Library.synchronize();
+	}
+
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		onStart(intent, startId);
+		return 0;
 	}
 }

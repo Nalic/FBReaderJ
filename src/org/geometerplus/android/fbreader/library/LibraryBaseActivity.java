@@ -30,15 +30,18 @@ import android.widget.*;
 
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.core.image.ZLImage;
+import org.geometerplus.zlibrary.core.image.ZLLoadableImage;
 
 import org.geometerplus.zlibrary.ui.android.image.ZLAndroidImageData;
 import org.geometerplus.zlibrary.ui.android.image.ZLAndroidImageManager;
+import org.geometerplus.zlibrary.ui.android.image.ZLAndroidImageLoader;
 
 import org.geometerplus.fbreader.tree.FBTree;
 import org.geometerplus.fbreader.library.*;
 
 import org.geometerplus.zlibrary.ui.android.R;
 
+import org.geometerplus.android.util.UIUtil;
 import org.geometerplus.android.fbreader.tree.ZLAndroidTree;
 
 abstract class LibraryBaseActivity extends ListActivity {
@@ -81,6 +84,12 @@ abstract class LibraryBaseActivity extends ListActivity {
 		private int myCoverWidth = -1;
 		private int myCoverHeight = -1;
 
+		private final Runnable myInvalidateViewsRunnable = new Runnable() {
+			public void run() {
+				getListView().invalidateViews();
+			}
+		};
+
 		public View getView(int position, View convertView, final ViewGroup parent) {
 			final FBTree tree = getItem(position);
 			final View view = (convertView != null) ?  convertView :
@@ -108,8 +117,18 @@ abstract class LibraryBaseActivity extends ListActivity {
 				Bitmap coverBitmap = null;
 				ZLImage cover = tree.getCover();
 				if (cover != null) {
-					final ZLAndroidImageData data =
-						((ZLAndroidImageManager)ZLAndroidImageManager.Instance()).getImageData(cover);
+					ZLAndroidImageData data = null;
+					final ZLAndroidImageManager mgr = (ZLAndroidImageManager)ZLAndroidImageManager.Instance();
+					if (cover instanceof ZLLoadableImage) {
+						final ZLLoadableImage img = (ZLLoadableImage)cover;
+						if (img.isSynchronized()) {
+							data = mgr.getImageData(img);
+						} else {
+							ZLAndroidImageLoader.Instance().startImageLoading(img, myInvalidateViewsRunnable);
+						}
+					} else {
+						data = mgr.getImageData(cover);
+					}
 					if (data != null) {
 						coverBitmap = data.getBitmap(2 * myCoverWidth, 2 * myCoverHeight);
 					}
@@ -141,6 +160,13 @@ abstract class LibraryBaseActivity extends ListActivity {
 		}
 
 		public void run() {
+			if (!LibraryTopLevelActivity.Library.hasState(Library.STATE_FULLY_INITIALIZED)) {
+				UIUtil.wait("loadingBookList", new Runnable() {
+					public void run() {
+						LibraryTopLevelActivity.Library.waitForState(Library.STATE_FULLY_INITIALIZED);
+					}
+				}, LibraryBaseActivity.this);
+			}
 			startActivity(
 				new Intent(LibraryBaseActivity.this, LibraryTreeActivity.class)
 					.putExtra(SELECTED_BOOK_PATH_KEY, mySelectedBookPath)

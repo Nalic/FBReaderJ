@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2010 Geometer Plus <contact@geometerplus.com>
+ * Copyright (C) 2010 Geometer Plus <contact@geometerplus.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,16 +19,22 @@
 
 package org.geometerplus.zlibrary.core.image;
 
-public abstract class ZLSingleImage implements ZLImage {
-	private final String myMimeType;
-	
-	public ZLSingleImage(final String mimeType) {
-		myMimeType = mimeType;
+public abstract class ZLLoadableImage extends ZLSingleImage {
+	private volatile boolean myIsSynchronized;
+
+	public ZLLoadableImage(String mimeType) {
+		super(mimeType);
 	}
 
-	public abstract byte[] byteData();
-	
-	public final String mimeType() {
-		return myMimeType;
+	public final boolean isSynchronized() {
+		return myIsSynchronized;
 	}
+
+	protected final void setSynchronized() {
+		myIsSynchronized = true;
+	}
+
+	public abstract void synchronize();
+	public abstract void synchronizeFast();
+	public abstract String getId();
 }
