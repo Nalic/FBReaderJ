@@ -21,10 +21,10 @@ package org.geometerplus.android.fbreader.library;
 
 import java.util.List;
 
-import android.app.ListActivity;
+import android.app.*;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Bundle;
+import android.os.*;
 import android.view.*;
 import android.widget.*;
 
@@ -45,6 +45,8 @@ import org.geometerplus.android.util.UIUtil;
 import org.geometerplus.android.fbreader.tree.ZLAndroidTree;
 
 abstract class LibraryBaseActivity extends ListActivity {
+	static Library Library;
+
 	public static final String SELECTED_BOOK_PATH_KEY = "SelectedBookPath";
 
 	protected final ZLResource myResource = ZLResource.resource("libraryView");
@@ -160,18 +162,26 @@ abstract class LibraryBaseActivity extends ListActivity {
 		}
 
 		public void run() {
-			if (!LibraryTopLevelActivity.Library.hasState(Library.STATE_FULLY_INITIALIZED)) {
-				UIUtil.wait("loadingBookList", new Runnable() {
+			final Runnable postRunnable = new Runnable() {
+				public void run() {
+					startActivity(
+						new Intent(LibraryBaseActivity.this, LibraryTreeActivity.class)
+							.putExtra(SELECTED_BOOK_PATH_KEY, mySelectedBookPath)
+							.putExtra(LibraryTreeActivity.TREE_PATH_KEY, myTreePath)
+					);
+				}
+			};
+			if (Library.hasState(Library.STATE_FULLY_INITIALIZED)) {
+				postRunnable.run();
+			} else {
+				UIUtil.runWithMessage(LibraryBaseActivity.this, "loadingBookList",
+				new Runnable() {
 					public void run() {
-						LibraryTopLevelActivity.Library.waitForState(Library.STATE_FULLY_INITIALIZED);
+						Library.waitForState(Library.STATE_FULLY_INITIALIZED);
 					}
-				}, LibraryBaseActivity.this);
+				},
+				postRunnable);
 			}
-			startActivity(
-				new Intent(LibraryBaseActivity.this, LibraryTreeActivity.class)
-					.putExtra(SELECTED_BOOK_PATH_KEY, mySelectedBookPath)
-					.putExtra(LibraryTreeActivity.TREE_PATH_KEY, myTreePath)
-			);
 		}
 	}
 }
