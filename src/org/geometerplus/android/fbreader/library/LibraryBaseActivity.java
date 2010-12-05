@@ -31,6 +31,7 @@ import android.widget.*;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.core.image.ZLImage;
 import org.geometerplus.zlibrary.core.image.ZLLoadableImage;
+import org.geometerplus.zlibrary.core.options.ZLStringOption;
 
 import org.geometerplus.zlibrary.ui.android.image.ZLAndroidImageData;
 import org.geometerplus.zlibrary.ui.android.image.ZLAndroidImageManager;
@@ -46,6 +47,8 @@ import org.geometerplus.android.fbreader.tree.ZLAndroidTree;
 
 abstract class LibraryBaseActivity extends ListActivity {
 	static Library Library;
+	static final ZLStringOption BookSearchPatternOption =
+		new ZLStringOption("BookSearch", "Pattern", "");
 
 	public static final String SELECTED_BOOK_PATH_KEY = "SelectedBookPath";
 
@@ -62,6 +65,31 @@ abstract class LibraryBaseActivity extends ListActivity {
 	@Override
 	public void onListItemClick(ListView listView, View view, int position, long rowId) {
 		FBTree tree = ((LibraryAdapter)getListAdapter()).getItem(position);
+	}
+
+	@Override
+	public boolean onSearchRequested() {
+		startSearch(BookSearchPatternOption.getValue(), true, null, false);
+		return true;
+	}
+
+	protected static final String ACTION_FOUND = "fbreader.library.intent.FOUND";
+
+	protected boolean runSearch(Intent intent) {
+	   	final String pattern = intent.getStringExtra(SearchManager.QUERY);
+		if (pattern == null || pattern.length() == 0) {
+			return false;
+		}
+		BookSearchPatternOption.setValue(pattern);
+		return Library.searchBooks(pattern).hasChildren();
+	}
+
+	protected void showNotFoundToast() {
+		Toast.makeText(
+			this,
+			ZLResource.resource("errorMessage").getResource("bookNotFound").getValue(),
+			Toast.LENGTH_SHORT
+		).show();
 	}
 
 	protected final class LibraryAdapter extends BaseAdapter {

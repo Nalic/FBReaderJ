@@ -4,8 +4,10 @@
 DONE Covers loading in background
 DONE Wait messages
 * Favorites
-* Search
+DONE Search
 * File view
 * Activity caption
 * Book deleting
 * Show book info activity instead of immediate opening/menu
+* Main menu
+* Context menu
