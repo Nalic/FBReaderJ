@@ -24,10 +24,10 @@ import java.util.LinkedList;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 
@@ -51,8 +51,8 @@ public class LibraryTopLevelActivity extends LibraryBaseActivity {
 		if (SQLiteBooksDatabase.Instance() == null) {
 			new SQLiteBooksDatabase(this, "LIBRARY_NG");
 		}
-		if (Library == null) {
-			Library = new Library();
+		if (LibraryInstance == null) {
+			LibraryInstance = new Library();
 			startService(new Intent(getApplicationContext(), InitializationService.class));
 		}
 
@@ -82,6 +82,7 @@ public class LibraryTopLevelActivity extends LibraryBaseActivity {
 			R.drawable.ic_list_library_folder,
 			new Runnable() {
 				public void run() {
+					runFileManager();
 				}
 			}
 		));
@@ -92,7 +93,7 @@ public class LibraryTopLevelActivity extends LibraryBaseActivity {
 
 	@Override
 	public void onDestroy() {
-		Library = null;
+		LibraryInstance = null;
 		super.onDestroy();
 	}
 
@@ -128,6 +129,13 @@ public class LibraryTopLevelActivity extends LibraryBaseActivity {
 		} else if (ACTION_FOUND.equals(intent.getAction())) {
 			setSearchResults(intent);
 		}
+	}
+	
+	private void runFileManager(){
+		Log.v(FileManager.LOG, "runFileManager()");
+		Intent i = new Intent(this, FileManager.class);
+		i.putExtra(FileManager.FILE_MANAGER_PATH, ""); 
+		startActivity(i);
 	}
 }
 

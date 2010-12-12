@@ -19,14 +19,13 @@
 
 package org.geometerplus.android.fbreader.library;
 
+import org.geometerplus.fbreader.library.BookTree;
+import org.geometerplus.fbreader.tree.FBTree;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
-
-import org.geometerplus.fbreader.tree.FBTree;
-import org.geometerplus.fbreader.library.Library;
-import org.geometerplus.fbreader.library.BookTree;
 
 public class LibraryTreeActivity extends LibraryBaseActivity {
 	private String myTreePathString;
@@ -70,15 +69,15 @@ public class LibraryTreeActivity extends LibraryBaseActivity {
 
 		FBTree tree = null;
 		if (PATH_RECENT.equals(path[0])) {
-			tree = Library.recentBooks();
+			tree = LibraryInstance.recentBooks();
 		} else if (PATH_SEARCH_RESULTS.equals(path[0])) {
-			tree = Library.searchResults();
+			tree = LibraryInstance.searchResults();
 		} else if (PATH_BY_AUTHOR.equals(path[0])) {
-			tree = Library.byAuthor();
+			tree = LibraryInstance.byAuthor();
 		} else if (PATH_BY_TAG.equals(path[0])) {
-			tree = Library.byTag();
+			tree = LibraryInstance.byTag();
 		} else if (PATH_FAVORITES.equals(path[0])) {
-			tree = Library.favorites();
+			tree = LibraryInstance.favorites();
 		}
         
 		for (int i = 1; i < path.length; ++i) {

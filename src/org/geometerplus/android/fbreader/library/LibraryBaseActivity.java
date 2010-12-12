@@ -24,7 +24,7 @@ import java.util.List;
 import android.app.*;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.*;
+import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
 
@@ -57,7 +57,7 @@ abstract class LibraryBaseActivity extends ListActivity {
 	static final String PATH_BY_AUTHOR = "byAuthor";
 	static final String PATH_BY_TAG = "byTag";
 
-	static Library Library;
+	static Library LibraryInstance;
 
 	static final ZLStringOption BookSearchPatternOption =
 		new ZLStringOption("BookSearch", "Pattern", "");
@@ -86,7 +86,7 @@ abstract class LibraryBaseActivity extends ListActivity {
 			return false;
 		}
 		BookSearchPatternOption.setValue(pattern);
-		return Library.searchBooks(pattern).hasChildren();
+		return LibraryInstance.searchBooks(pattern).hasChildren();
 	}
 
 	protected void showNotFoundToast() {
@@ -104,17 +104,14 @@ abstract class LibraryBaseActivity extends ListActivity {
 			myItems = items;
 		}
 
-		@Override
 		public final int getCount() {
 			return myItems.size();
 		}
 
-		@Override
 		public final FBTree getItem(int position) {
 			return myItems.get(position);
 		}
 
-		@Override
 		public final long getItemId(int position) {
 			return position;
 		}
@@ -125,12 +122,12 @@ abstract class LibraryBaseActivity extends ListActivity {
 			if (tree instanceof BookTree) {
 				menu.setHeaderTitle(tree.getName());
 				menu.add(0, OPEN_BOOK_ITEM_ID, 0, myResource.getResource("openBook").getValue());
-				if (Library.isBookInFavorites(((BookTree)tree).Book)) {
+				if (LibraryInstance.isBookInFavorites(((BookTree)tree).Book)) {
 					menu.add(0, REMOVE_FROM_FAVORITES_ITEM_ID, 0, myResource.getResource("removeFromFavorites").getValue());
 				} else {
 					menu.add(0, ADD_TO_FAVORITES_ITEM_ID, 0, myResource.getResource("addToFavorites").getValue());
 				}
-				if ((Library.getRemoveBookMode(((BookTree)tree).Book) & Library.REMOVE_FROM_DISK) != 0) {
+				if ((LibraryInstance.getRemoveBookMode(((BookTree)tree).Book) & Library.REMOVE_FROM_DISK) != 0) {
 					menu.add(0, DELETE_BOOK_ITEM_ID, 0, myResource.getResource("deleteBook").getValue());
                 }
 			}
@@ -230,10 +227,10 @@ abstract class LibraryBaseActivity extends ListActivity {
 					openBook(bookTree.Book);
 					return true;
 				case ADD_TO_FAVORITES_ITEM_ID:
-					Library.addBookToFavorites(bookTree.Book);
+					LibraryInstance.addBookToFavorites(bookTree.Book);
 					return true;
 				case REMOVE_FROM_FAVORITES_ITEM_ID:
-					Library.removeBookFromFavorites(bookTree.Book);
+					LibraryInstance.removeBookFromFavorites(bookTree.Book);
 					getListView().invalidateViews();
 					return true;
 				case DELETE_BOOK_ITEM_ID:
@@ -270,13 +267,13 @@ abstract class LibraryBaseActivity extends ListActivity {
 					);
 				}
 			};
-			if (Library.hasState(Library.STATE_FULLY_INITIALIZED)) {
+			if (LibraryInstance.hasState(Library.STATE_FULLY_INITIALIZED)) {
 				postRunnable.run();
 			} else {
 				UIUtil.runWithMessage(LibraryBaseActivity.this, "loadingBookList",
 				new Runnable() {
 					public void run() {
-						Library.waitForState(Library.STATE_FULLY_INITIALIZED);
+						LibraryInstance.waitForState(Library.STATE_FULLY_INITIALIZED);
 					}
 				},
 				postRunnable);
